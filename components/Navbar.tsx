@@ -1,0 +1,3 @@
+'use client';
+import Link from 'next/link';import {useCart} from './CartProvider';import {useState} from 'react';
+export function Navbar(){const {count}=useCart();const [open,setOpen]=useState(false);return <header className="nav"><Link href="/" className="brand">BITE<span>HOUSE</span></Link><button className="hamb" onClick={()=>setOpen(!open)} aria-label="Menu">☰</button><nav className={open?'open':''}>{[['/','Home'],['/menu/','Menu'],['/about/','Story'],['/reservations/','Reserve'],['/contact/','Contact']].map(([h,t])=><Link key={h} href={h} onClick={()=>setOpen(false)}>{t}</Link>)}<Link className="cartLink" href="/cart/">Cart <b>{count}</b></Link></nav></header>}
