@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17110b">
+<meta name="description" content="YUMMY — a modern burger restaurant experience with handcrafted burgers, sides and shakes.">
+<title>YUMMY — Burger House</title>
+<style>
+:root{
+  --bg:#f7f0e6;
+  --surface:#fffaf4;
+  --surface-2:#f0e4d5;
+  --ink:#20150e;
+  --muted:#75675d;
+  --brown:#43261a;
+  --brown-2:#24150d;
+  --orange:#e96f1f;
+  --orange-2:#ff9d52;
+  --cream:#fff8ef;
+  --gold:#d7a55b;
+  --line:rgba(32,21,14,.11);
+  --shadow:0 24px 80px rgba(54,35,24,.13);
+  --radius:28px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);overflow-x:hidden}
+body.locked{overflow:hidden}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ---------- HERO / SCROLL SEQUENCE ---------- */
+.scroll-scene{position:relative;height:320vh;background:#120d08}
+.sticky-stage{position:sticky;top:0;width:100%;height:100svh;min-height:560px;overflow:hidden;background:#120d08;isolation:isolate}
+.hero-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;background:#120d08}
+.hero-shade{position:absolute;inset:0;pointer-events:none;z-index:2;background:
+  radial-gradient(circle at 50% 45%,transparent 24%,rgba(0,0,0,.10) 54%,rgba(0,0,0,.45) 100%),
+  linear-gradient(to bottom,rgba(0,0,0,.44),transparent 22%,transparent 74%,rgba(0,0,0,.42));}
+.hero-nav{position:absolute;top:0;left:0;right:0;z-index:20;padding:20px clamp(16px,3vw,44px);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.glass{border:1px solid rgba(255,248,239,.18);background:rgba(19,13,9,.27);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.brand{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;color:var(--cream);font-size:13px;font-weight:950;letter-spacing:.16em}
+.brand-mark{width:10px;height:10px;border-radius:50%;background:var(--orange-2);box-shadow:0 0 28px rgba(255,157,82,.9)}
+.nav-center{display:flex;gap:8px;align-items:center}
+.nav-chip,.cart-btn{border:1px solid rgba(255,248,239,.18);background:rgba(19,13,9,.27);color:var(--cream);padding:10px 14px;border-radius:999px;font-size:11px;font-weight:850;letter-spacing:.08em;transition:transform .2s ease,background .2s ease}
+.nav-chip:hover,.cart-btn:hover{transform:translateY(-2px);background:rgba(255,248,239,.11)}
+.cart-btn{display:inline-flex;align-items:center;gap:8px}
+.cart-count{min-width:19px;height:19px;padding:0 6px;border-radius:999px;background:var(--orange);display:grid;place-items:center;font-size:10px}
+.hero-side{position:absolute;z-index:12;top:50%;transform:translateY(-50%);color:var(--cream);font-size:12px;font-weight:950;letter-spacing:.2em;text-shadow:0 8px 32px rgba(0,0,0,.45);writing-mode:vertical-rl;pointer-events:none}
+.hero-side.left{left:clamp(11px,2vw,30px);transform:translateY(-50%) rotate(180deg)}
+.hero-side.right{right:clamp(11px,2vw,30px)}
+.hero-side b{color:var(--orange-2)}
+.hero-progress{position:absolute;z-index:15;left:50%;bottom:20px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;color:rgba(255,248,239,.75);font-size:10px;font-weight:850;letter-spacing:.12em;width:min(310px,60vw)}
+.progress-track{flex:1;height:3px;border-radius:999px;background:rgba(255,248,239,.22);overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--orange),#ffd09e);border-radius:inherit;transform-origin:left}
+.hero-loader{position:absolute;z-index:16;left:50%;bottom:62px;transform:translateX(-50%);padding:9px 13px;border-radius:999px;color:rgba(255,248,239,.9);font-size:10px;font-weight:850;letter-spacing:.09em;text-transform:uppercase;transition:opacity .35s ease}
+.hero-loader.hide{opacity:0;pointer-events:none}
+.scroll-cue{position:absolute;z-index:15;left:50%;top:50%;transform:translate(-50%,80px);color:rgba(255,248,239,.78);font-size:10px;letter-spacing:.18em;font-weight:900;text-transform:uppercase;display:flex;align-items:center;gap:8px;animation:bob 1.8s ease-in-out infinite}
+.scroll-cue span{width:26px;height:1px;background:rgba(255,248,239,.45)}
+@keyframes bob{0%,100%{opacity:.55;transform:translate(-50%,80px)}50%{opacity:1;transform:translate(-50%,89px)}}
+
+/* ---------- SHARED PAGE UI ---------- */
+.shell{width:min(1240px,calc(100% - 36px));margin:0 auto}
+.section{padding:110px 0}
+.eyebrow{font-size:11px;font-weight:950;letter-spacing:.18em;text-transform:uppercase;color:var(--orange)}
+.display{font-size:clamp(42px,6.5vw,82px);line-height:.92;letter-spacing:-.055em;margin:14px 0 0}
+.lead{max-width:650px;font-size:17px;line-height:1.7;color:var(--muted);margin:20px 0 0}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:34px}
+.section-head .copy{max-width:720px}
+.soft-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+/* ---------- HOME SECTIONS ---------- */
+.feature-strip{background:var(--brown-2);color:var(--cream);padding:28px 0}
+.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,248,239,.12)}
+.feature{padding:18px 20px;background:var(--brown-2);display:flex;flex-direction:column;gap:5px}
+.feature strong{font-size:14px}.feature span{color:rgba(255,248,239,.62);font-size:12px}
+.menu-section{background:var(--bg)}
+.menu-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:30px}
+.tab{border:1px solid var(--line);background:transparent;color:var(--ink);padding:10px 14px;border-radius:999px;font-size:12px;font-weight:850;letter-spacing:.04em}
+.tab.active,.tab:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.menu-card{overflow:hidden;position:relative}
+.food-photo{aspect-ratio:1.12/1;position:relative;overflow:hidden;background:linear-gradient(135deg,#3a2115,#d16b29)}
+.food-photo img{width:100%;height:100%;object-fit:cover;transition:transform .55s ease}
+.menu-card:hover .food-photo img{transform:scale(1.045)}
+.food-fallback{position:absolute;inset:0;display:grid;place-items:center;font-size:76px;background:radial-gradient(circle at 50% 35%,#f4bc81,#7e3d1b 76%);}
+.food-content{padding:20px}
+.item-row{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.item-row h3{margin:0;font-size:20px;letter-spacing:-.025em}.price{font-weight:950;font-size:15px;white-space:nowrap}
+.item-desc{color:var(--muted);font-size:13px;line-height:1.6;margin:9px 0 17px}
+.item-actions{display:flex;gap:8px}
+.btn{border:0;border-radius:999px;padding:12px 16px;font-size:12px;font-weight:900;letter-spacing:.04em;transition:transform .2s ease,box-shadow .2s ease}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--orange);color:white;box-shadow:0 10px 24px rgba(233,111,31,.22)}
+.btn-dark{background:var(--ink);color:var(--cream)}
+.btn-ghost{background:var(--surface-2);color:var(--ink)}
+.btn-full{width:100%}
+
+.story-section{background:var(--surface-2)}
+.story-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:stretch}
+.story-copy{padding:clamp(28px,4vw,48px)}
+.story-copy p{color:var(--muted);line-height:1.8;font-size:15px}
+.story-image{min-height:460px;border-radius:var(--radius);overflow:hidden;background:linear-gradient(145deg,#5a2b19,#f29a4b 55%,#f6dcc0)}
+.story-plate{width:100%;height:100%;display:grid;place-items:center;font-size:150px;background:radial-gradient(circle at center,#ffe4bd 0 28%,transparent 29%),linear-gradient(145deg,#6c351e,#e9802e 60%,#ffc58f)}
+.story-points{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:24px}
+.story-point{padding:16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.45)}
+.story-point strong{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.1em}.story-point span{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+
+.reserve-section{background:var(--brown);color:var(--cream)}
+.reserve-card{display:grid;grid-template-columns:1fr .95fr;gap:30px;align-items:center}
+.reserve-card .lead{color:rgba(255,248,239,.68)}
+.reserve-panel{padding:24px;border-radius:24px;background:rgba(255,248,239,.07);border:1px solid rgba(255,248,239,.14)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,248,239,.72)}
+.field input,.field select,.field textarea{width:100%;border:1px solid rgba(255,248,239,.14);background:rgba(0,0,0,.12);color:var(--cream);border-radius:14px;padding:12px 13px;outline:none}.field input::placeholder,.field textarea::placeholder{color:rgba(255,248,239,.4)}
+.field textarea{min-height:100px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(255,157,82,.8);box-shadow:0 0 0 3px rgba(255,157,82,.11)}
+
+.locations-section{background:var(--bg)}
+.location-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.location-card{padding:24px}.location-icon{font-size:28px}.location-card h3{margin:14px 0 5px;font-size:20px}.location-card p{color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 16px}
+.location-meta{font-size:12px;font-weight:850;color:var(--brown)}
+
+.contact-section{background:var(--surface)}
+.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:20px}.contact-panel{padding:28px}.contact-list{display:grid;gap:12px;margin-top:24px}.contact-item{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.contact-item:last-child{border-bottom:0}.contact-item b{display:block;font-size:12px}.contact-item span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.contact-form input,.contact-form textarea{border:1px solid var(--line);background:white;color:var(--ink)}.contact-form input::placeholder,.contact-form textarea::placeholder{color:#a8998f}.contact-form label{color:var(--muted)}.contact-form input:focus,.contact-form textarea:focus{border-color:var(--orange)}
+
+.footer{background:var(--brown-2);color:var(--cream);padding:34px 0}.footer-inner{display:flex;justify-content:space-between;gap:18px;align-items:center}.footer small{color:rgba(255,248,239,.56)}
+
+/* ---------- DRAWERS / MODALS ---------- */
+.overlay{position:fixed;inset:0;background:rgba(12,8,6,.56);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s ease}.overlay.open{opacity:1;pointer-events:auto}
+.cart-drawer{position:fixed;right:0;top:0;bottom:0;width:min(450px,100%);z-index:110;background:var(--surface);transform:translateX(102%);transition:transform .35s cubic-bezier(.2,.75,.2,1);display:flex;flex-direction:column;box-shadow:-30px 0 90px rgba(0,0,0,.17)}
+.cart-drawer.open{transform:translateX(0)}
+.drawer-head{padding:22px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.drawer-head h2{margin:0;font-size:24px}.close{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:white;color:var(--ink);font-size:20px}
+.cart-body{flex:1;overflow:auto;padding:18px}.empty-cart{padding:45px 15px;text-align:center;color:var(--muted)}
+.cart-line{display:grid;grid-template-columns:68px 1fr auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}.cart-thumb{width:68px;height:68px;border-radius:16px;background:linear-gradient(135deg,#e8b07b,#6d3118);display:grid;place-items:center;font-size:28px;overflow:hidden}.cart-thumb img{width:100%;height:100%;object-fit:cover}.cart-line h4{margin:0;font-size:14px}.cart-line p{margin:4px 0 0;color:var(--muted);font-size:11px}.qty{display:flex;align-items:center;gap:7px;margin-top:8px}.qty button{width:25px;height:25px;border-radius:50%;border:1px solid var(--line);background:white}.qty span{min-width:15px;text-align:center;font-size:11px;font-weight:850}
+.cart-bottom{padding:18px;border-top:1px solid var(--line)}.sum-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:8px}.sum-row.total{font-size:18px;font-weight:950;margin:14px 0 16px}.fine{font-size:10px;color:var(--muted);line-height:1.5}
+
+.modal-wrap{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s ease;background:rgba(12,8,6,.56)}.modal-wrap.open{opacity:1;pointer-events:auto}.modal{width:min(760px,100%);max-height:92svh;overflow:auto;border-radius:28px;background:var(--surface);box-shadow:0 40px 120px rgba(0,0,0,.25);transform:translateY(20px) scale(.98);transition:transform .25s ease}.modal-wrap.open .modal{transform:none}.modal-head{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.modal-head h3{margin:0;font-size:22px}.modal-body{padding:22px}.detail-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px}.detail-image{aspect-ratio:1/1;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,#f2b478,#6f3219);display:grid;place-items:center;font-size:90px}.detail-image img{width:100%;height:100%;object-fit:cover}.detail-info h4{margin:0;font-size:30px;letter-spacing:-.04em}.detail-info p{color:var(--muted);line-height:1.7;font-size:13px}.option-group{margin-top:18px}.option-group > span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:900;margin-bottom:8px}.option-row{display:flex;flex-wrap:wrap;gap:7px}.option{border:1px solid var(--line);background:white;padding:9px 11px;border-radius:999px;font-size:11px;font-weight:800}.option.selected{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+
+
+/* ---------- CHECKOUT / PAYMENT UI ---------- */
+.checkout-modal-shell{width:min(1120px,100%);background:linear-gradient(145deg,#fffaf4,#f4e9dc);overflow:hidden}
+.checkout-layout{display:grid;grid-template-columns:1.05fr .95fr;min-height:620px}
+.checkout-side{padding:30px;border-right:1px solid var(--line);background:rgba(255,255,255,.32)}
+.checkout-side h4{margin:8px 0 6px;font-size:30px;letter-spacing:-.04em}.checkout-side .lead{font-size:13px;margin:0 0 22px}
+.checkout-summary-card{padding:16px;background:rgba(255,255,255,.65);border:1px solid var(--line);border-radius:18px;margin-bottom:18px}
+.checkout-summary-list{display:grid;gap:10px;max-height:190px;overflow:auto}.checkout-item-line{display:flex;justify-content:space-between;gap:14px;font-size:12px}.checkout-item-line span:last-child{font-weight:900;white-space:nowrap}
+.checkout-step{display:flex;align-items:center;gap:9px;margin:0 0 18px;font-size:10px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.step-dot{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--cream);font-size:10px}.step-line{height:1px;flex:1;background:var(--line)}
+.checkout-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.checkout-form-grid .field.full{grid-column:1/-1}
+.checkout-form-grid .field label{color:var(--muted)}.checkout-form-grid input{background:#fff;color:var(--ink);border:1px solid var(--line)}.checkout-form-grid input::placeholder{color:#aa9b90}.checkout-form-grid input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(233,111,31,.10)}
+.saved-chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;background:#f1e8de;color:var(--brown);font-size:10px;font-weight:900;margin:0 0 14px}.saved-chip button{border:0;background:none;color:var(--brown);font-size:12px}
+.checkout-side .tiny-note{font-size:10px;line-height:1.55;color:var(--muted);margin:10px 0 0}
+.checkout-side .btn{margin-top:14px}
+.phone-area{display:grid;place-items:center;padding:34px;background:radial-gradient(circle at 50% 20%,#f6c794 0,transparent 40%),#24150d}
+.phone-device{width:min(350px,82vw);aspect-ratio:9/18.7;border:8px solid #090807;border-radius:42px;padding:8px;box-shadow:0 30px 80px rgba(0,0,0,.42),0 0 0 1px rgba(255,255,255,.12);background:#090807;position:relative}
+.phone-device:before{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);width:92px;height:22px;border-radius:999px;background:#090807;z-index:4}
+.phone-screen{width:100%;height:100%;border-radius:31px;overflow:auto;background:#f5f7f7;padding:19px 15px 15px;color:#15201c;scrollbar-width:none}.phone-screen::-webkit-scrollbar{display:none}
+.phone-bar{display:flex;justify-content:space-between;align-items:center;font-size:9px;font-weight:900;color:#5a6a64;margin:1px 2px 17px}.phone-bar .signal{display:flex;gap:5px;align-items:center}.phone-bar i{width:4px;height:4px;border-radius:50%;background:#7b8a84}
+.ep-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}.ep-brand{font-size:20px;font-weight:950;letter-spacing:-.05em;color:#18a56f}.ep-brand small{display:block;font-size:8px;color:#68766f;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.ep-icon{width:38px;height:38px;border-radius:12px;background:#e4f7ef;display:grid;place-items:center;color:#18a56f;font-weight:950;font-size:13px}
+.ep-card{background:white;border-radius:20px;padding:16px;box-shadow:0 10px 30px rgba(26,52,42,.07);border:1px solid rgba(22,51,42,.06)}
+.ep-kicker{font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#81918a}.ep-merchant{font-size:14px;font-weight:950;margin:6px 0 14px}.ep-total{font-size:33px;letter-spacing:-.055em;font-weight:950;margin:0}.ep-caption{font-size:10px;color:#7b8a84;margin-top:4px}
+.ep-recipient{margin-top:17px;padding-top:15px;border-top:1px solid #e9efec}.ep-recipient-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:7px}.ep-number{font-size:17px;font-weight:950;letter-spacing:-.02em}.ep-copy{border:1px solid #dce7e2;background:#f7fbf9;color:#14875d;border-radius:999px;padding:7px 9px;font-size:9px;font-weight:950}
+.ep-steps{display:grid;gap:8px;margin-top:15px}.ep-step{display:flex;align-items:flex-start;gap:8px;font-size:10px;color:#63716b;line-height:1.5}.ep-step b{width:20px;height:20px;flex:0 0 20px;border-radius:50%;background:#e8f6f0;color:#14875d;display:grid;place-items:center;font-size:9px}
+.ep-divider{height:1px;background:#e9efec;margin:15px 0}.ep-input{width:100%;border:1px solid #dce7e2;background:#fbfdfc;border-radius:12px;padding:11px 10px;outline:none;font-size:11px;color:#15201c}.ep-input:focus{border-color:#18a56f;box-shadow:0 0 0 3px rgba(24,165,111,.10)}
+.ep-pay{width:100%;border:0;border-radius:13px;padding:12px;background:#18a56f;color:white;font-size:11px;font-weight:950;letter-spacing:.02em;margin-top:10px}.ep-pay:disabled{opacity:.45;cursor:not-allowed}.ep-status{min-height:17px;text-align:center;margin-top:9px;font-size:9px;color:#6f7d77;line-height:1.4}
+.ep-safe{font-size:8px;line-height:1.45;color:#82908a;text-align:center;margin:13px 4px 0}.ep-safe strong{color:#5f6d67}
+.checkout-divider{display:flex;align-items:center;gap:9px;color:#a29388;font-size:9px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;margin:16px 0}.checkout-divider:before,.checkout-divider:after{content:"";height:1px;flex:1;background:var(--line)}
+.order-status-pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:7px 10px;background:#fff2e7;color:#a45116;font-size:10px;font-weight:900}.order-status-dot{width:6px;height:6px;border-radius:50%;background:#e96f1f}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);z-index:300;padding:11px 14px;border-radius:999px;background:#21140d;color:#fff8ef;font-size:11px;font-weight:850;box-shadow:0 16px 40px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:820px){.checkout-layout{grid-template-columns:1fr}.checkout-side{border-right:0;border-bottom:1px solid var(--line);padding:22px}.phone-area{padding:24px 14px 30px}.checkout-modal-shell{max-height:95svh}.checkout-form-grid{grid-template-columns:1fr}.checkout-form-grid .field.full{grid-column:auto}}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:980px){
+  .menu-grid{grid-template-columns:repeat(2,1fr)}
+  .story-grid,.reserve-card,.contact-grid{grid-template-columns:1fr}
+  .location-grid{grid-template-columns:1fr 1fr}
+  .feature-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:720px){
+  .shell{width:min(100% - 24px,1240px)}
+  .section{padding:80px 0}
+  .hero-nav{padding:14px 12px}.nav-center{display:none}
+  .brand{padding:9px 12px}.cart-btn{padding:9px 12px}
+  .scroll-scene{height:285vh}
+  .sticky-stage{min-height:520px}
+  .hero-side{font-size:10px}
+  .hero-progress{bottom:14px}.hero-loader{bottom:55px}
+  .menu-grid,.location-grid{grid-template-columns:1fr}
+  .feature-grid{grid-template-columns:1fr 1fr}
+  .feature{padding:15px}
+  .section-head{align-items:start;flex-direction:column}
+  .story-points{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
+  .footer-inner{flex-direction:column;align-items:flex-start}
+  .detail-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}.nav-chip,.cart-btn,.btn,.food-photo img,.overlay,.cart-drawer,.modal-wrap,.modal{transition:none}.scroll-cue{animation:none}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="scroll-scene" id="home">
+  <div class="sticky-stage">
+    <canvas id="heroCanvas" class="hero-canvas" aria-label="YUMMY burger animation"></canvas>
+    <div class="hero-shade"></div>
+
+    <nav class="hero-nav" aria-label="Main navigation">
+      <a class="brand glass" href="#home" aria-label="YUMMY home"><span class="brand-mark"></span>YUMMY</a>
+      <div class="nav-center">
+        <a class="nav-chip" href="#menu">MENU</a>
+        <a class="nav-chip" href="#story">STORY</a>
+        <a class="nav-chip" href="#locations">LOCATIONS</a>
+        <a class="nav-chip" href="#reserve">RESERVE</a>
+        <a class="nav-chip" href="#contact">CONTACT</a>
+      </div>
+      <button class="cart-btn" id="openCart" type="button">CART <span class="cart-count" id="cartCount">0</span></button>
+    </nav>
+
+    <div class="hero-side left">Y<b>U</b>MMY</div>
+    <div class="hero-side right">Y<b>U</b>MMY</div>
+
+    <div class="scroll-cue" id="scrollCue"><span></span>Scroll to reveal <span></span></div>
+    <div class="hero-progress" aria-hidden="true"><span>01</span><div class="progress-track"><div class="progress-fill" id="progressBar"></div></div><span>135</span></div>
+    <div class="hero-loader glass" id="loader">Loading first bite…</div>
+  </div>
+</section>
+
+<!-- RESTAURANT PROMISE -->
+<section class="feature-strip">
+  <div class="shell feature-grid">
+    <div class="feature"><strong>Fresh every day</strong><span>Never frozen patties & crisp produce.</span></div>
+    <div class="feature"><strong>Fast delivery</strong><span>Hot, packed and on the way.</span></div>
+    <div class="feature"><strong>Made your way</strong><span>Choose sauces, cheese and extras.</span></div>
+    <div class="feature"><strong>Late-night cravings</strong><span>Open till late on selected locations.</span></div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="section menu-section" id="menu">
+  <div class="shell">
+    <div class="section-head">
+      <div class="copy"><div class="eyebrow">The menu</div><h2 class="display">Big flavor.<br>Zero boring bites.</h2><p class="lead">Our signature burgers are built with toasted buns, juicy patties and sauces made to disappear from the plate.</p></div>
+      <button class="btn btn-dark" id="scrollToCart">View your cart</button>
+    </div>
+    <div class="menu-tabs" id="menuTabs"></div>
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="section story-section" id="story">
+  <div class="shell story-grid">
+    <div class="story-copy soft-card">
+      <div class="eyebrow">Our story</div>
+      <h2 class="display">Built around<br>the good stuff.</h2>
+      <p>YUMMY started with one simple idea: make the kind of burger people talk about on the ride home. We toast every bun, season every patty and build every order when it is placed.</p>
+      <div class="story-points">
+        <div class="story-point"><strong>01 · Ingredients</strong><span>Fresh produce, signature sauces and proper cheese pulls.</span></div>
+        <div class="story-point"><strong>02 · Craft</strong><span>Smash, sear, stack, repeat — with no shortcuts.</span></div>
+        <div class="story-point"><strong>03 · Vibe</strong><span>Casual enough for a quick bite, special enough for a night out.</span></div>
+        <div class="story-point"><strong>04 · People</strong><span>Made by a crew that genuinely loves burgers.</span></div>
+      </div>
+    </div>
+    <div class="story-image soft-card"><div class="story-plate">🍔</div></div>
+  </div>
+</section>
+
+<!-- RESERVATION -->
+<section class="section reserve-section" id="reserve">
+  <div class="shell reserve-card">
+    <div><div class="eyebrow" style="color:#ffbb7a">Book a table</div><h2 class="display">Make it a<br>burger night.</h2><p class="lead">Bring the crew. Pick the table. We’ll handle the cravings.</p></div>
+    <div class="reserve-panel">
+      <form id="reserveForm">
+        <div class="form-grid">
+          <div class="field"><label for="resName">Name</label><input id="resName" name="name" required placeholder="Your name"></div>
+          <div class="field"><label for="resGuests">Guests</label><select id="resGuests" name="guests"><option>2</option><option>3</option><option>4</option><option>5</option><option>6+</option></select></div>
+          <div class="field"><label for="resDate">Date</label><input id="resDate" name="date" type="date" required></div>
+          <div class="field"><label for="resTime">Time</label><input id="resTime" name="time" type="time" required></div>
+          <div class="field full"><label for="resNote">Note</label><textarea id="resNote" name="note" placeholder="Birthday, window seat, anything we should know?"></textarea></div>
+        </div>
+        <button class="btn btn-primary btn-full" style="margin-top:14px" type="submit">Request reservation</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATIONS -->
+<section class="section locations-section" id="locations">
+  <div class="shell">
+    <div class="section-head"><div class="copy"><div class="eyebrow">Find us</div><h2 class="display">A table near<br>your cravings.</h2><p class="lead">Pick a YUMMY spot, check the hours and come hungry.</p></div></div>
+    <div class="location-grid" id="locationGrid"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section contact-section" id="contact">
+  <div class="shell contact-grid">
+    <div class="contact-panel soft-card"><div class="eyebrow">Talk to us</div><h2 class="display">Questions?<br>We’re listening.</h2><div class="contact-list">
+      <div class="contact-item"><span>📞</span><div><b>Order line</b><a href="tel:+923349552257"><span>+92 334 955 2257</span></a></div></div>
+      <div class="contact-item"><span>✉️</span><div><b>Email</b><span id="contactEmailStatus">Email notifications available</span></div></div>
+      <div class="contact-item"><span>⏱</span><div><b>Hours</b><span>12:00 PM — 1:00 AM</span></div></div>
+    </div></div>
+    <div class="contact-panel soft-card"><div class="eyebrow">Contact form</div><h3 style="font-size:28px;margin:12px 0 20px">Drop us a message.</h3>
+      <form id="contactForm" class="contact-form"><div class="form-grid">
+        <div class="field"><label for="cName">Name</label><input id="cName" required placeholder="Your name"></div>
+        <div class="field"><label for="cEmail">Email</label><input id="cEmail" type="email" required placeholder="you@example.com"></div>
+        <div class="field full"><label for="cMessage">Message</label><textarea id="cMessage" required placeholder="Tell us what’s up..."></textarea></div>
+      </div><button class="btn btn-dark" type="submit" style="margin-top:14px">Send message</button></form>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="shell footer-inner"><a class="brand" href="#home"><span class="brand-mark"></span>YUMMY</a><small>© 2026 YUMMY Burger House · Crafted for hungry people.</small></div></footer>
+
+<!-- GLOBAL OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<!-- CART DRAWER -->
+<aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+  <div class="drawer-head"><h2>Your order</h2><button class="close" id="closeCart" aria-label="Close cart">×</button></div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-bottom" id="cartBottom"></div>
+</aside>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-wrap" id="productModal" role="dialog" aria-modal="true" aria-label="Customize item">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modalTitle">Item</h3><button class="close" data-close-modal="productModal" aria-label="Close">×</button></div>
+    <div class="modal-body"><div class="detail-grid">
+      <div class="detail-image" id="modalImage">🍔</div>
+      <div class="detail-info"><h4 id="modalName">Burger</h4><p id="modalDesc"></p><div class="price" id="modalPrice"></div>
+        <div class="option-group"><span>Bun</span><div class="option-row" data-group="bun"><button class="option selected" type="button">Sesame</button><button class="option" type="button">Brioche</button></div></div>
+        <div class="option-group"><span>Extra</span><div class="option-row" data-group="extra"><button class="option selected" type="button">None</button><button class="option" type="button">Cheese +120</button><button class="option" type="button">Sauce +60</button></div></div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:22px"><button class="btn btn-ghost" id="modalMinus" type="button">−</button><strong id="modalQty">1</strong><button class="btn btn-ghost" id="modalPlus" type="button">+</button><button class="btn btn-primary" id="addCustomized" type="button" style="margin-left:auto">Add to cart</button></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-wrap" id="checkoutModal" role="dialog" aria-modal="true" aria-label="YUMMY checkout">
+  <div class="modal checkout-modal-shell">
+    <div class="modal-head"><h3>Checkout</h3><button class="close" data-close-modal="checkoutModal" aria-label="Close checkout">×</button></div>
+    <div class="checkout-layout">
+      <section class="checkout-side">
+        <div class="checkout-step"><span class="step-dot">1</span>Delivery details <span class="step-line"></span><span>2</span>Payment</div>
+        <div class="eyebrow">Ready to order</div>
+        <h4>Your table or your door.</h4>
+        <p class="lead">Your details are saved on this device, so the next YUMMY order is faster.</p>
+        <div id="savedProfileChip"></div>
+        <div class="checkout-summary-card">
+          <div class="eyebrow" style="color:var(--muted);margin-bottom:10px">Your basket</div>
+          <div id="checkoutItems" class="checkout-summary-list"></div>
+          <div class="checkout-divider">Total</div>
+          <div class="sum-row"><span>Subtotal</span><strong id="checkoutSubtotal">Rs. 0</strong></div>
+          <div class="sum-row"><span>Delivery</span><strong id="checkoutDelivery">Rs. 150</strong></div>
+          <div class="sum-row total"><span>Total</span><strong id="checkoutTotal">Rs. 0</strong></div>
+        </div>
+        <form id="checkoutForm" novalidate>
+          <div class="checkout-form-grid">
+            <div class="field"><label for="oName">Name</label><input id="oName" autocomplete="name" required placeholder="Your name"></div>
+            <div class="field"><label for="oPhone">Phone</label><input id="oPhone" autocomplete="tel" required placeholder="03xx xxxxxxx"></div>
+            <div class="field full"><label for="oEmail">Receipt email</label><input id="oEmail" autocomplete="email" type="email" required placeholder="you@example.com"></div>
+            <div class="field full"><label for="oAddress">Delivery address</label><input id="oAddress" autocomplete="street-address" required placeholder="House, street, area"></div>
+            <div class="field full"><label for="oCity">City</label><input id="oCity" autocomplete="address-level2" value="Peshawar" required></div>
+          </div>
+          <button class="btn btn-dark btn-full" type="submit">Continue to Easypaisa</button>
+          <p class="tiny-note">Payment instructions are shown inside the phone screen. This page never asks for an Easypaisa PIN, OTP, or password.</p>
+        </form>
+      </section>
+      <section class="phone-area">
+        <div class="phone-device">
+          <div class="phone-screen">
+            <div class="phone-bar"><span>YUMMY CHECKOUT</span><span class="signal"><i></i><i></i><i></i> 100%</span></div>
+            <div class="ep-head"><div class="ep-brand">easypaisa<small>payment flow</small></div><div class="ep-icon">EP</div></div>
+            <div class="ep-card">
+              <div class="ep-kicker">Pay merchant</div>
+              <div class="ep-merchant">YUMMY Burger House</div>
+              <p class="ep-total" id="phoneTotal">Rs. 0</p>
+              <div class="ep-caption">Exact amount for this order</div>
+              <div class="ep-recipient"><div class="ep-kicker">Send to this number</div><div class="ep-recipient-row"><strong class="ep-number" id="merchantNumber">03349552257</strong><button class="ep-copy" id="copyMerchant" type="button">Copy</button></div></div>
+              <div class="ep-steps">
+                <div class="ep-step"><b>1</b><span>Open your Easypaisa app and choose the transfer/send option.</span></div>
+                <div class="ep-step"><b>2</b><span>Send the exact total shown above to the YUMMY merchant number.</span></div>
+                <div class="ep-step"><b>3</b><span>Return here and enter the transaction/reference ID.</span></div>
+              </div>
+              <div class="ep-divider"></div>
+              <label class="ep-kicker" for="paymentReference">Transaction/reference ID</label>
+              <input id="paymentReference" class="ep-input" autocomplete="off" maxlength="80" placeholder="e.g. EP123456789">
+              <button class="ep-pay" id="confirmPayment" type="button">I’ve sent the payment</button>
+              <div class="ep-status" id="paymentStatus"></div>
+            </div>
+            <p class="ep-safe"><strong>YUMMY payment screen.</strong> This is not the official Easypaisa app. Never enter an Easypaisa PIN or OTP here.</p>
+            <a href="https://easypaisa.com.pk/" target="_blank" rel="noopener" class="btn btn-ghost btn-full" style="margin-top:12px;text-align:center">Open Easypaisa</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION -->
+<div class="modal-wrap" id="successModal" role="dialog" aria-modal="true" aria-label="Order status">
+  <div class="modal"><div class="modal-body" style="text-align:center;padding:46px 24px">
+    <div style="font-size:56px">🍔</div><div class="eyebrow">Order received</div>
+    <h3 style="font-size:38px;letter-spacing:-.04em;margin:10px 0">The kitchen can see it.</h3>
+    <div id="successStatus" class="order-status-pill"><span class="order-status-dot"></span>Pending payment verification</div>
+    <p style="color:var(--muted);line-height:1.7;max-width:560px;margin:16px auto 8px">Order <strong id="orderNumber">YMY-0001</strong> has been saved. Your Easypaisa transfer reference is <strong id="successReference">—</strong>.</p>
+    <p id="successEmail" style="font-size:12px;color:var(--muted);margin:0 auto 20px;max-width:540px"></p>
+    <button class="btn btn-dark" data-close-modal="successModal">Done</button>
+  </div></div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  /* ======================================================
+     HERO IMAGE SEQUENCE — keeps the proven native-scroll model
+     ====================================================== */
+  const FRAME_COUNT = 135;
+  const FRAME_DIR = 'burger_frames/';
+  const FRAME_EXT = '.jpg';
+  const PAD = 3;
+  const scene = document.getElementById('home');
+  const canvas = document.getElementById('heroCanvas');
+  const ctx = canvas.getContext('2d', {alpha:false, desynchronized:true});
+  const loader = document.getElementById('loader');
+  const progressBar = document.getElementById('progressBar');
+  const scrollCue = document.getElementById('scrollCue');
+  const images = new Array(FRAME_COUNT + 1);
+  const loaded = new Uint8Array(FRAME_COUNT + 1);
+  let currentFrame = 1;
+  let targetFrame = 1;
+  let lastValidFrame = 1;
+  let raf = 0;
+  let ready = false;
+  let sceneProgress = 0;
+
+  const frameUrl = n => FRAME_DIR + 'frame_' + String(n).padStart(PAD,'0') + FRAME_EXT;
+
+  function resizeCanvas(){
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(rect.width * dpr));
+    const h = Math.max(1, Math.round(rect.height * dpr));
+    if(canvas.width !== w || canvas.height !== h){
+      canvas.width = w; canvas.height = h;
+      if(loaded[lastValidFrame]) drawFrame(lastValidFrame, true);
+    }
+  }
+
+  function drawFrame(index, force = false){
+    const img = images[index];
+    if(!img || !loaded[index] || !img.naturalWidth || !img.naturalHeight) return false;
+    if(!force && index === currentFrame) return true;
+    const cw = canvas.width, ch = canvas.height;
+    const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+    const dw = img.naturalWidth * scale, dh = img.naturalHeight * scale;
+    const dx = (cw - dw) * .5, dy = (ch - dh) * .5;
+    ctx.fillStyle = '#120d08';
+    ctx.fillRect(0,0,cw,ch);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img,dx,dy,dw,dh);
+    currentFrame = index;
+    lastValidFrame = index;
+    return true;
+  }
+
+  function closestLoaded(target){
+    if(loaded[target]) return target;
+    for(let d=1; d<FRAME_COUNT; d++){
+      const a=target-d,b=target+d;
+      if(a>=1 && loaded[a]) return a;
+      if(b<=FRAME_COUNT && loaded[b]) return b;
+    }
+    return lastValidFrame;
+  }
+
+  function renderLoop(){
+    raf = 0;
+    const diff = targetFrame - currentFrame;
+    if(Math.abs(diff) > .01){
+      const eased = currentFrame + diff * .22;
+      const next = Math.max(1, Math.min(FRAME_COUNT, Math.round(eased)));
+      const usable = closestLoaded(next);
+      drawFrame(usable);
+      raf = requestAnimationFrame(renderLoop);
+    }
+  }
+
+  function scheduleRender(){ if(!raf) raf=requestAnimationFrame(renderLoop); }
+
+  function updateHero(){
+    const maxScroll = Math.max(1, scene.offsetHeight - window.innerHeight);
+    const top = scene.getBoundingClientRect().top;
+    sceneProgress = Math.max(0,Math.min(1,-top/maxScroll));
+    targetFrame = 1 + sceneProgress*(FRAME_COUNT-1);
+    progressBar.style.width = (sceneProgress*100).toFixed(2)+'%';
+    scrollCue.style.opacity = String(Math.max(0,1-sceneProgress*5));
+    scheduleRender();
+    preloadNear(Math.round(targetFrame));
+  }
+
+  function preloadFrame(n){
+    if(n<1 || n>FRAME_COUNT || images[n]) return;
+    const img = new Image();
+    img.decoding = 'async';
+    images[n] = img;
+    img.onload = () => {
+      loaded[n] = 1;
+      if(n===1){
+        ready=true;
+        resizeCanvas();
+        drawFrame(1,true);
+        loader.textContent='Scroll to reveal';
+        setTimeout(()=>loader.classList.add('hide'),700);
+      }
+      if(Math.abs(n-targetFrame)<1.5) scheduleRender();
+    };
+    img.onerror = () => { images[n]=null; };
+    img.src = frameUrl(n);
+  }
+
+  function preloadNear(center){
+    const radius = 11;
+    for(let i=0;i<=radius;i++){
+      preloadFrame(center+i); preloadFrame(center-i);
+    }
+  }
+
+  resizeCanvas();
+  preloadFrame(1);
+  preloadNear(1);
+  // Background load without blocking the first paint.
+  let batch=2;
+  const loadBatches=()=>{
+    const end=Math.min(FRAME_COUNT,batch+12);
+    for(let i=batch;i<=end;i++) preloadFrame(i);
+    batch=end+1;
+    if(batch<=FRAME_COUNT) setTimeout(loadBatches,90);
+  };
+  setTimeout(loadBatches,120);
+  window.addEventListener('scroll',updateHero,{passive:true});
+  window.addEventListener('resize',()=>setTimeout(()=>{resizeCanvas();updateHero()},80),{passive:true});
+  updateHero();
+
+
+  /* ======================================================
+     RESTAURANT DATA + MENU UI + CHECKOUT
+     ====================================================== */
+  const menu = [
+    {id:'classic',cat:'Burgers',name:'Classic YUMMY',price:690,emoji:'🍔',desc:'Smash patty, cheddar, shredded lettuce, pickles and house sauce.',tag:'Best seller'},
+    {id:'fire',cat:'Burgers',name:'Firehouse',price:820,emoji:'🔥',desc:'Double smash, melted cheese, crispy onions and a smoky hot sauce.',tag:'Spicy'},
+    {id:'crispy',cat:'Burgers',name:'Crispy Chicken',price:760,emoji:'🍗',desc:'Crunchy chicken, slaw, cheese and creamy pepper mayo.',tag:'Crunchy'},
+    {id:'fries',cat:'Sides',name:'Loaded Fries',price:390,emoji:'🍟',desc:'Crispy fries covered in cheese sauce, jalapeño and YUMMY dust.',tag:'Shareable'},
+    {id:'rings',cat:'Sides',name:'Golden Rings',price:320,emoji:'🧅',desc:'Crispy onion rings with a side of signature dip.',tag:'Classic'},
+    {id:'shake',cat:'Drinks',name:'Salted Caramel Shake',price:480,emoji:'🥤',desc:'Cold vanilla shake, salted caramel and a tiny sea-salt finish.',tag:'Sweet'},
+    {id:'cola',cat:'Drinks',name:'Cold Cola',price:190,emoji:'🥤',desc:'Ice-cold fizz served just the way a burger deserves.',tag:'Cold'},
+    {id:'brownie',cat:'Dessert',name:'Warm Brownie',price:420,emoji:'🍫',desc:'Fudgy chocolate brownie with vanilla cream.',tag:'Dessert'}
+  ];
+  const locations=[
+    {name:'Hayatabad',city:'Peshawar',hours:'12 PM – 1 AM',icon:'📍'},
+    {name:'University Road',city:'Peshawar',hours:'12 PM – 2 AM',icon:'📍'},
+    {name:'F-7',city:'Islamabad',hours:'1 PM – 1 AM',icon:'📍'}
+  ];
+  const PAYMENT_NUMBER='03349552257';
+  const STORAGE={cart:'yummy-cart',profile:'yummy-profile',orders:'yummy-orders',reservations:'yummy-reservations',messages:'yummy-messages'};
+
+  // Fill these with your EmailJS dashboard values. Do not put a private API key in this HTML.
+  const EMAILJS_CONFIG={
+    publicKey:'',
+    serviceId:'',
+    orderTemplateId:'',
+    customerTemplateId:'',
+    reservationTemplateId:'',
+    contactTemplateId:''
+  };
+
+  let category='All';
+  let cart=safeParse(localStorage.getItem(STORAGE.cart),[]);
+  let selectedProduct=null, selectedQty=1, modalExtra=0;
+  let lastOrder=null;
+
+  const menuTabs=document.getElementById('menuTabs');
+  const menuGrid=document.getElementById('menuGrid');
+  const locationGrid=document.getElementById('locationGrid');
+  const cartCount=document.getElementById('cartCount');
+  const cartDrawer=document.getElementById('cartDrawer');
+  const overlay=document.getElementById('overlay');
+  const cartBody=document.getElementById('cartBody');
+  const cartBottom=document.getElementById('cartBottom');
+  const toast=document.body.appendChild(Object.assign(document.createElement('div'),{className:'toast'}));
+
+  function safeParse(value,fallback){try{return value?JSON.parse(value):fallback}catch{return fallback}}
+  function money(n){return 'Rs. '+Number(n||0).toLocaleString('en-PK')}
+  function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.remove('show'),2200)}
+  function cartQty(){return cart.reduce((s,x)=>s+Number(x.qty||0),0)}
+  function cartTotals(){const subtotal=cart.reduce((s,x)=>s+Number(x.price||0)*Number(x.qty||0),0);const delivery=subtotal>=1500||subtotal===0?0:150;return{subtotal,delivery,total:subtotal+delivery}}
+  function saveCart(){localStorage.setItem(STORAGE.cart,JSON.stringify(cart));renderCart()}
+  function getProfile(){return safeParse(localStorage.getItem(STORAGE.profile),{})}
+  function saveProfile(profile){localStorage.setItem(STORAGE.profile,JSON.stringify(profile))}
+  function saveHistory(key,item){const arr=safeParse(localStorage.getItem(key),[]);arr.unshift(item);localStorage.setItem(key,JSON.stringify(arr.slice(0,50)))}
+
+  function renderTabs(){
+    const cats=['All',...new Set(menu.map(x=>x.cat))];
+    menuTabs.innerHTML=cats.map(c=>`<button class="tab ${c===category?'active':''}" data-cat="${c}">${c}</button>`).join('');
+  }
+
+  function renderMenu(){
+    const list=category==='All'?menu:menu.filter(x=>x.cat===category);
+    menuGrid.innerHTML=list.map(item=>`<article class="menu-card soft-card">
+      <div class="food-photo"><div class="food-fallback">${item.emoji}</div></div>
+      <div class="food-content"><div class="item-row"><div><div style="font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--orange)">${item.tag}</div><h3>${item.name}</h3></div><div class="price">${money(item.price)}</div></div>
+      <p class="item-desc">${item.desc}</p><div class="item-actions"><button class="btn btn-ghost view-item" data-id="${item.id}">Customize</button><button class="btn btn-primary add-item" data-id="${item.id}">Add</button></div></div></article>`).join('');
+  }
+
+  function renderLocations(){locationGrid.innerHTML=locations.map(x=>`<article class="location-card soft-card"><div class="location-icon">${x.icon}</div><h3>${x.name}</h3><p>${x.city}. Walk in for a quick YUMMY or make a reservation before the rush.</p><div class="location-meta">${x.hours} · Dine in / Takeaway</div></article>`).join('');}
+
+  function renderCart(){
+    const qty=cartQty();cartCount.textContent=qty;
+    if(!cart.length){
+      cartBody.innerHTML='<div class="empty-cart"><div style="font-size:44px">🍔</div><h3 style="margin:12px 0 5px">Your cart is hungry.</h3><div>Add something delicious from the menu.</div></div>';
+      cartBottom.innerHTML='';return;
+    }
+    cartBody.innerHTML=cart.map((x,i)=>`<div class="cart-line"><div class="cart-thumb">${x.emoji}</div><div><h4>${x.name}</h4><p>${x.optionText||'Classic build'}</p><div class="qty"><button data-action="dec" data-index="${i}" type="button">−</button><span>${x.qty}</span><button data-action="inc" data-index="${i}" type="button">+</button></div></div><strong>${money(x.price*x.qty)}</strong></div>`).join('');
+    const {subtotal,delivery,total}=cartTotals();
+    cartBottom.innerHTML=`<div class="sum-row"><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div class="sum-row"><span>Delivery</span><strong>${delivery?money(delivery):'FREE'}</strong></div><div class="sum-row total"><span>Total</span><strong>${money(total)}</strong></div><button class="btn btn-primary btn-full" id="checkoutBtn" type="button">Continue to Easypaisa checkout</button><div class="fine" style="margin-top:8px">Manual Easypaisa payment to <strong>${PAYMENT_NUMBER}</strong>. PIN and OTP are never requested here.</div>`;
+  }
+
+  function openCart(){overlay.classList.add('open');cartDrawer.classList.add('open');renderCart();document.body.classList.add('locked')}
+  function closeCart(){overlay.classList.remove('open');cartDrawer.classList.remove('open');if(!document.querySelector('.modal-wrap.open'))document.body.classList.remove('locked')}
+  function openModal(id){document.getElementById(id).classList.add('open');document.body.classList.add('locked')}
+  function closeModal(id){document.getElementById(id).classList.remove('open');if(!document.querySelector('.modal-wrap.open')&&!cartDrawer.classList.contains('open'))document.body.classList.remove('locked')}
+
+  function addProduct(id,qty=1,optionText='Classic build',extraPrice=0){
+    const p=menu.find(x=>x.id===id);if(!p)return;
+    const key=id+'|'+optionText;const existing=cart.find(x=>x.key===key);
+    if(existing) existing.qty+=qty;else cart.push({key,id,name:p.name,price:p.price+extraPrice,emoji:p.emoji,qty,optionText});
+    saveCart();openCart();showToast(`${p.name} added to cart`);
+  }
+
+  menuTabs.addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;category=b.dataset.cat;renderTabs();renderMenu()});
+  menuGrid.addEventListener('click',e=>{const add=e.target.closest('.add-item'),view=e.target.closest('.view-item');if(add)addProduct(add.dataset.id,1);if(view)openProduct(view.dataset.id)});
+  document.getElementById('openCart').addEventListener('click',openCart);
+  document.getElementById('closeCart').addEventListener('click',closeCart);
+  document.getElementById('scrollToCart').addEventListener('click',openCart);
+  overlay.addEventListener('click',closeCart);
+  cartBody.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const i=Number(b.dataset.index);if(!cart[i])return;if(b.dataset.action==='inc')cart[i].qty++;else{cart[i].qty--;if(cart[i].qty<=0)cart.splice(i,1)}saveCart()});
+  cartBottom.addEventListener('click',e=>{if(e.target.id==='checkoutBtn')openCheckout()});
+
+  function openProduct(id){
+    selectedProduct=menu.find(x=>x.id===id);if(!selectedProduct)return;selectedQty=1;modalExtra=0;
+    document.getElementById('modalTitle').textContent='Customize your order';document.getElementById('modalName').textContent=selectedProduct.name;document.getElementById('modalDesc').textContent=selectedProduct.desc;document.getElementById('modalPrice').textContent=money(selectedProduct.price);document.getElementById('modalQty').textContent='1';document.getElementById('modalImage').textContent=selectedProduct.emoji;
+    document.querySelectorAll('[data-group="bun"] .option,[data-group="extra"] .option').forEach(b=>b.classList.remove('selected'));document.querySelector('[data-group="bun"] .option').classList.add('selected');document.querySelector('[data-group="extra"] .option').classList.add('selected');openModal('productModal');
+  }
+  document.getElementById('modalMinus').addEventListener('click',()=>{selectedQty=Math.max(1,selectedQty-1);document.getElementById('modalQty').textContent=selectedQty});
+  document.getElementById('modalPlus').addEventListener('click',()=>{selectedQty++;document.getElementById('modalQty').textContent=selectedQty});
+  document.querySelectorAll('.option-row').forEach(row=>row.addEventListener('click',e=>{const b=e.target.closest('.option');if(!b)return;row.querySelectorAll('.option').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');if(row.dataset.group==='extra')modalExtra=b.textContent.includes('Cheese')?120:b.textContent.includes('Sauce')?60:0}));
+  document.getElementById('addCustomized').addEventListener('click',()=>{if(!selectedProduct)return;const bun=document.querySelector('[data-group="bun"] .selected')?.textContent||'Sesame';const extra=document.querySelector('[data-group="extra"] .selected')?.textContent||'None';addProduct(selectedProduct.id,selectedQty,bun+' bun · '+extra,modalExtra);closeModal('productModal')});
+
+  function renderCheckout(){
+    const {subtotal,delivery,total}=cartTotals();
+    document.getElementById('checkoutSubtotal').textContent=money(subtotal);document.getElementById('checkoutDelivery').textContent=delivery?money(delivery):'FREE';document.getElementById('checkoutTotal').textContent=money(total);document.getElementById('phoneTotal').textContent=money(total);document.getElementById('merchantNumber').textContent=PAYMENT_NUMBER;
+    document.getElementById('checkoutItems').innerHTML=cart.map(x=>`<div class="checkout-item-line"><span>${x.qty} × ${x.name}<small style="display:block;color:var(--muted);font-size:9px;margin-top:2px">${x.optionText||'Classic build'}</small></span><span>${money(x.price*x.qty)}</span></div>`).join('');
+    const p=getProfile();
+    for(const [id,key] of [['oName','name'],['oPhone','phone'],['oEmail','email'],['oAddress','address'],['oCity','city']]){const el=document.getElementById(id);if(el && p[key] && !el.value)el.value=p[key]}
+    const chip=document.getElementById('savedProfileChip');chip.innerHTML=(p.name||p.phone)?`<div class="saved-chip">✓ Saved details loaded <button type="button" id="clearSaved">Clear</button></div>`:'';
+    const clear=document.getElementById('clearSaved');if(clear)clear.addEventListener('click',()=>{localStorage.removeItem(STORAGE.profile);renderCheckout()});
+  }
+
+  function openCheckout(){
+    if(!cart.length){showToast('Add something to your cart first');return}
+    renderCheckout();document.getElementById('paymentReference').value='';document.getElementById('paymentStatus').textContent='';openModal('checkoutModal');
+  }
+
+  function validCheckout(){
+    const ids=['oName','oPhone','oEmail','oAddress','oCity'];
+    return ids.every(id=>{const el=document.getElementById(id);el.reportValidity?.();return el.value.trim() && (id!=='oEmail'||el.checkValidity())});
+  }
+  document.getElementById('checkoutForm').addEventListener('submit',e=>{e.preventDefault();if(!validCheckout())return;const profile={name:document.getElementById('oName').value.trim(),phone:document.getElementById('oPhone').value.trim(),email:document.getElementById('oEmail').value.trim(),address:document.getElementById('oAddress').value.trim(),city:document.getElementById('oCity').value.trim()};saveProfile(profile);document.getElementById('paymentStatus').textContent='Your delivery details are saved. Complete the transfer, then enter its reference ID.';showToast('Details saved — payment step ready')});
+
+  document.getElementById('copyMerchant').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(PAYMENT_NUMBER);showToast('Easypaisa number copied')}catch{showToast('Number: '+PAYMENT_NUMBER)}});
+
+  function makeOrder(){
+    const profile={name:document.getElementById('oName').value.trim(),phone:document.getElementById('oPhone').value.trim(),email:document.getElementById('oEmail').value.trim(),address:document.getElementById('oAddress').value.trim(),city:document.getElementById('oCity').value.trim()};
+    const reference=document.getElementById('paymentReference').value.trim();
+    if(!validCheckout()){showToast('Complete delivery details first');return null}
+    if(reference.length<4){document.getElementById('paymentStatus').textContent='Please enter the transaction/reference ID from your payment receipt.';document.getElementById('paymentReference').focus();return null}
+    saveProfile(profile);
+    const {subtotal,delivery,total}=cartTotals();
+    return {orderNumber:'YMY-'+Date.now().toString().slice(-6),createdAt:new Date().toISOString(),status:'pending_verification',paymentMethod:'Easypaisa',merchantNumber:PAYMENT_NUMBER,paymentReference:reference,customer:profile,items:cart.map(x=>({name:x.name,qty:x.qty,price:x.price,options:x.optionText||''})),subtotal,delivery,total};
+  }
+
+  document.getElementById('confirmPayment').addEventListener('click',async()=>{
+    const order=makeOrder();if(!order)return;
+    lastOrder=order;saveHistory(STORAGE.orders,order);
+    const button=document.getElementById('confirmPayment');button.disabled=true;button.textContent='Saving order…';
+    let mailResult='';
+    try{mailResult=await sendOrderEmails(order)}catch(err){mailResult='Email setup needed'}
+    cart=[];saveCart();
+    document.getElementById('orderNumber').textContent=order.orderNumber;document.getElementById('successReference').textContent=order.paymentReference;
+    document.getElementById('successEmail').textContent=mailResult||`Your order is saved locally on this device. Payment status remains pending verification.`;
+    closeModal('checkoutModal');closeCart();openModal('successModal');
+    document.getElementById('paymentStatus').textContent='';button.disabled=false;button.textContent='I’ve sent the payment';
+  });
+
+  async function sendOrderEmails(order){
+    if(!window.emailjs || !EMAILJS_CONFIG.publicKey || !EMAILJS_CONFIG.serviceId || !EMAILJS_CONFIG.orderTemplateId)return '';
+    if(!window.__yummyEmailReady){emailjs.init({publicKey:EMAILJS_CONFIG.publicKey});window.__yummyEmailReady=true}
+    const items=order.items.map(x=>`${x.qty} × ${x.name} — ${money(x.price*x.qty)}${x.options?' · '+x.options:''}`).join('\n');
+    const params={order_number:order.orderNumber,customer_name:order.customer.name,customer_email:order.customer.email,customer_phone:order.customer.phone,address:order.customer.address,city:order.customer.city,items,total:money(order.total),subtotal:money(order.subtotal),delivery:order.delivery?money(order.delivery):'FREE',payment_method:order.paymentMethod,payment_reference:order.paymentReference,merchant_number:order.merchantNumber,order_status:order.status,reply_to:order.customer.email,to_email:order.customer.email};
+    await emailjs.send(EMAILJS_CONFIG.serviceId,EMAILJS_CONFIG.orderTemplateId,params);
+    if(EMAILJS_CONFIG.customerTemplateId){await new Promise(r=>setTimeout(r,1100));await emailjs.send(EMAILJS_CONFIG.serviceId,EMAILJS_CONFIG.customerTemplateId,params)}
+    return 'Order details were sent through your configured email service.';
+  }
+
+  document.querySelectorAll('[data-close-modal]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.closeModal)));
+  document.querySelectorAll('.modal-wrap').forEach(w=>w.addEventListener('click',e=>{if(e.target===w)closeModal(w.id)}));
+
+  document.getElementById('reserveForm').addEventListener('submit',async e=>{
+    e.preventDefault();const fd=new FormData(e.target);const reservation={id:'RES-'+Date.now().toString().slice(-6),createdAt:new Date().toISOString(),name:fd.get('name'),guests:fd.get('guests'),date:fd.get('date'),time:fd.get('time'),note:fd.get('note')||''};saveHistory(STORAGE.reservations,reservation);
+    let sent=false;try{sent=await sendGenericEmail('reservationTemplateId',{reservation_id:reservation.id,name:reservation.name,guests:reservation.guests,date:reservation.date,time:reservation.time,note:reservation.note})}catch{}
+    e.target.reset();showToast(sent?'Reservation sent to YUMMY by email':'Reservation saved on this device');
+  });
+
+  document.getElementById('contactForm').addEventListener('submit',async e=>{
+    e.preventDefault();const data={name:document.getElementById('cName').value.trim(),email:document.getElementById('cEmail').value.trim(),message:document.getElementById('cMessage').value.trim(),createdAt:new Date().toISOString()};
+    if(!data.name||!data.email||!data.message||!document.getElementById('cEmail').checkValidity()){e.target.reportValidity();return}
+    saveHistory(STORAGE.messages,data);let sent=false;try{sent=await sendGenericEmail('contactTemplateId',data)}catch{}
+    e.target.reset();showToast(sent?'Message sent to YUMMY':'Message saved on this device');
+  });
+
+  async function sendGenericEmail(templateKey,params){
+    if(!window.emailjs||!EMAILJS_CONFIG.publicKey||!EMAILJS_CONFIG.serviceId||!EMAILJS_CONFIG[templateKey])return false;
+    if(!window.__yummyEmailReady){emailjs.init({publicKey:EMAILJS_CONFIG.publicKey});window.__yummyEmailReady=true}
+    await emailjs.send(EMAILJS_CONFIG.serviceId,EMAILJS_CONFIG[templateKey],params);return true;
+  }
+
+  const contactEmailStatus=document.getElementById('contactEmailStatus');
+  if(contactEmailStatus)contactEmailStatus.textContent=EMAILJS_CONFIG.publicKey?'Email notifications connected':'EmailJS setup ready in the HTML config';
+
+  // Keep navigation inside this one-file site behaving like pages.
+  function routeToHash(){const hash=location.hash||'#home';const target=document.querySelector(hash);if(target)target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}
+  window.addEventListener('hashchange',()=>setTimeout(routeToHash,0));
+
+  renderTabs();renderMenu();renderLocations();renderCart();
+
+})();
+</script>
+</body>
+</html>

@@ -1,21 +1,8 @@
 import './globals.css';
 import { CartProvider } from '@/components/CartProvider';
-import { Navbar } from '@/components/Navbar';
 
-export const metadata = {
-  title: 'Bite House — Crafted to Crave',
-  description: 'A modern burger restaurant experience.',
-};
+export const metadata = { title: 'Bite House — Crafted to Crave', description: 'Bite House burger restaurant — handcrafted burgers, sides, drinks and real online ordering.' };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <html lang="en">
-      <body>
-        <CartProvider>
-          <Navbar />
-          {children}
-        </CartProvider>
-      </body>
-    </html>
-  );
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <html lang="en"><body><CartProvider>{children}</CartProvider></body></html>;
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getContactMessages, getReservations } from '@/lib/supabase';
+import { getContactMessages, getReservations, updateContactStatus, updateReservationStatus } from '@/lib/supabase';
 import { isAdmin } from '@/lib/admin';
 export async function GET(){if(!await isAdmin())return NextResponse.json({error:'Unauthorized'},{status:401});try{const [reservations,messages]=await Promise.all([getReservations(),getContactMessages()]);return NextResponse.json({reservations,messages});}catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Could not load inbox.'},{status:500});}}
+export async function PATCH(request:Request){if(!await isAdmin())return NextResponse.json({error:'Unauthorized'},{status:401});try{const {type,id,status}=await request.json();if(type==='reservation')return NextResponse.json({item:await updateReservationStatus(id,status)});if(type==='message')return NextResponse.json({item:await updateContactStatus(id,status)});return NextResponse.json({error:'Unknown inbox item.'},{status:400});}catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Could not update inbox item.'},{status:500});}}

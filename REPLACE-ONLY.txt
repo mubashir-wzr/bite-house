@@ -1,0 +1,4 @@
+Extract this ZIP over your existing Bite House project folder.
+Do NOT delete node_modules, your existing package.json/lockfile, .env.local, or public/burger_frames.
+This archive intentionally contains only the files that should be replaced/added.
+Run Supabase SQL once; then restart your existing dev server if it is already running.

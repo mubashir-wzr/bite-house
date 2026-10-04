@@ -1,20 +1,5 @@
-import { ProductCard } from '@/components/ProductCard';
-import { fallbackMenu } from '@/lib/menu';
 import { getProducts } from '@/lib/supabase';
-
-export const dynamic = 'force-dynamic';
-
-export default async function MenuPage() {
-  let products = fallbackMenu;
-  try {
-    const dbProducts = await getProducts({ activeOnly: true });
-    if (dbProducts.length) products = dbProducts;
-  } catch {}
-
-  const groups = products.reduce<Record<string, typeof products>>((acc, product) => {
-    (acc[product.category] ||= []).push(product);
-    return acc;
-  }, {});
-
-  return <main className="page-shell"><section className="page-hero"><div className="container"><p className="eyebrow">THE MENU</p><h1>Pick your craving.</h1><p>Everything is made to order. No filler, no boring shortcuts.</p></div></section><section className="section"><div className="container">{Object.entries(groups).map(([category, items]) => <div className="menu-group" key={category}><div className="menu-group-head"><h2>{category}</h2><span>{items.length} items</span></div><div className="product-grid">{items.map((product) => <ProductCard key={product.id} product={product} />)}</div></div>)}</div></section></main>;
-}
+import { ProductCard } from '@/components/ProductCard';
+import Link from 'next/link';
+export const dynamic='force-dynamic';
+export default async function MenuPage(){let products=[];try{products=await getProducts({activeOnly:true});}catch{}return <main className="page-shell"><Link className="page-back" href="/">← Bite House</Link><section className="page-hero"><div className="container"><p className="eyebrow">The menu</p><h1>Big flavor.<br/>Zero boring bites.</h1><p>Everything on the live menu comes from Supabase when the database is connected.</p></div></section><section className="section"><div className="container"><div className="product-grid">{products.map((p:any)=><ProductCard key={p.id} product={p}/>)}</div>{!products.length&&<div className="empty-state"><h2>Menu is waiting for Supabase.</h2><p>Run the schema and add products from the admin dashboard.</p><Link className="button" href="/admin">Open admin</Link></div>}</div></section></main>}

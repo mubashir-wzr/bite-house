@@ -1,3 +1,16 @@
 import { NextResponse } from 'next/server';
-import { createReservation, sendEmailViaResend } from '@/lib/supabase';
-export async function POST(request: Request){try{const body=await request.json();if(!body.name||!body.phone||!body.reservation_date||!body.reservation_time||!body.guests)return NextResponse.json({error:'Please complete the required fields.'},{status:400});const reservation=await createReservation(body);const adminEmail=process.env.ADMIN_EMAIL;if(adminEmail){void sendEmailViaResend({to:adminEmail,subject:'New Bite House reservation request',html:`<h2>Reservation request</h2><p>${reservation.name} · ${reservation.phone}</p><p>${reservation.reservation_date} at ${reservation.reservation_time} · ${reservation.guests} guests</p>`}).catch(()=>{});}return NextResponse.json({reservation});}catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Could not save reservation.'},{status:500});}}
+import { createReservation } from '@/lib/supabase';
+import { sendEmailJS } from '@/lib/emailjs';
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    if (!body.name || !body.phone || !body.reservation_date || !body.reservation_time || !body.guests) return NextResponse.json({error:'Please complete the required fields.'},{status:400});
+    const reservation = await createReservation({name:String(body.name).trim(),phone:String(body.phone).trim(),email:body.email?String(body.email).trim():undefined,reservation_date:String(body.reservation_date),reservation_time:String(body.reservation_time),guests:Number(body.guests),notes:body.notes?String(body.notes).trim():undefined});
+    void sendEmailJS(process.env.EMAILJS_RESERVATION_TEMPLATE_ID, {
+      reservation_id: reservation.id || '', name: reservation.name, phone: reservation.phone, email: reservation.email || '',
+      guests: reservation.guests, date: reservation.reservation_date, time: reservation.reservation_time, note: reservation.notes || '',
+      to_email: process.env.ADMIN_EMAIL || process.env.EMAILJS_ADMIN_EMAIL || '', reply_to: reservation.email || ''
+    }).catch(() => undefined);
+    return NextResponse.json({reservation});
+  } catch(error) { return NextResponse.json({error:error instanceof Error?error.message:'Could not save reservation.'},{status:500}); }
+}

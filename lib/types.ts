@@ -13,9 +13,18 @@ export type Product = {
   updated_at?: string;
 };
 
+export type ProductOptions = {
+  bun: 'Sesame' | 'Brioche';
+  extra: 'None' | 'Cheese' | 'Sauce';
+  extraPrice: number;
+};
+
 export type CartLine = {
   product: Product;
   quantity: number;
+  key: string;
+  unitPrice: number;
+  options?: ProductOptions;
 };
 
 export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'completed' | 'cancelled';

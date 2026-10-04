@@ -1,34 +1,34 @@
-# Bite House — Real Next.js + Supabase
+# Bite House — exact-design Next.js rebuild
 
-This replacement is designed to be copied over your existing Bite House project. It does **not** add a new npm/bun dependency, so you do not need to run `bun install` or `npm install` again.
+This update recreates the supplied YUMMY/Burger House visual design as the Bite House Next.js homepage while keeping real application capabilities.
 
-## What is real now
-- Supabase-backed products with admin create/edit/delete.
-- Supabase-backed orders with persistent records and status updates.
-- Supabase-backed reservation requests and contact messages.
-- Easypaisa transaction ID is saved with each order.
-- Optional Resend notifications for new orders, reservations and contact messages.
-- Admin login uses an HTTP-only signed cookie.
-- Still one dynamic Next.js app — no separate Express backend.
-- Scroll-controlled 135-frame burger hero with safe null checks.
+## What is real
+- Native-scroll 135-frame burger sequence from `public/burger_frames/frame_001.jpg` … `frame_135.jpg`.
+- Live menu reads active products from `/api/products` and falls back to the bundled starter menu until Supabase is available.
+- Cart is persisted in the browser and supports bun/extra customization.
+- Checkout posts to `/api/orders`, where server code re-checks product prices and allowed extras before writing the order to Supabase.
+- Easypaisa manual transfer flow uses 03349552257 and only asks for the transaction/reference ID — never a PIN or OTP.
+- Reservations and contact messages are written to Supabase.
+- Admin login + product CRUD + order status + reservation/message status are protected by the admin session cookie.
+- EmailJS is integrated server-side through its REST endpoint. No new npm package is required.
 
-## One-time Supabase step
-Run `supabase/schema.sql` once in Supabase SQL Editor. The service-role API routes then use your environment variables.
+## Important: no new install required
+This ZIP intentionally excludes `package.json`, `package-lock.json`, `bun.lock`, `node_modules`, `.next`, `.env.local`, and your burger frames. Extract/replace these app/component/lib files over your existing Bite House project. Your existing dependencies and 135 JPG frames stay in place.
 
-Required server variables:
-`SUPABASE_URL`
-`SUPABASE_SERVICE_ROLE_KEY`
-`ADMIN_PASSWORD`
-`ADMIN_SESSION_SECRET`
+## Supabase setup
+Run `supabase/schema.sql` once in Supabase SQL Editor. Then put the Supabase URL + secret key in `.env.local` locally and in Vercel Environment Variables.
 
-Optional:
-`ADMIN_EMAIL`
-`RESEND_API_KEY`
-`RESEND_FROM_EMAIL`
+## EmailJS setup
+Create one EmailJS email service and these templates:
+1. Order admin: `EMAILJS_ORDER_ADMIN_TEMPLATE_ID`
+2. Order customer: `EMAILJS_ORDER_CUSTOMER_TEMPLATE_ID` (optional)
+3. Reservation: `EMAILJS_RESERVATION_TEMPLATE_ID`
+4. Contact: `EMAILJS_CONTACT_TEMPLATE_ID`
 
-Keep your existing `.env.local` file. Never commit it to GitHub.
+The template should use dynamic variables such as `{{to_email}}`, `{{reply_to}}`, `{{customer_name}}`, `{{order_number}}`, `{{items}}`, `{{total}}`, `{{payment_reference}}`, `{{name}}`, `{{message}}`, etc. Set the template's recipient to `{{to_email}}` when you want the server to choose the recipient.
 
-## Replace files
-Extract this ZIP over your existing project folder and replace the matching files. Keep your existing `node_modules`, `package.json`, `package-lock.json`/Bun lockfile, and your existing `public/burger_frames` folder.
+## Local env
+Copy `.env.example` to `.env.local` and fill the values. Never commit `.env.local`.
 
-After replacement, the next normal step is simply to run your existing dev/build command. No dependency installation is required by this update.
+## Vercel
+Import the GitHub repo as a Next.js project. Vercel installs dependencies from your existing lockfile automatically. Add the same environment variables in Vercel and deploy.

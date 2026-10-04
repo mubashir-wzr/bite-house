@@ -61,12 +61,13 @@ alter table public.orders enable row level security;
 alter table public.reservations enable row level security;
 alter table public.contact_messages enable row level security;
 
-insert into public.products (name,slug,description,price,category,image_url,featured,active,sort_order)
-values
-('Classic Smash','classic-smash','Double smashed beef, melted cheese, pickles and house sauce.',499,'Burgers','https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=80',true,true,1),
-('Fire House','fire-house','Smoky beef, spicy jalapeno sauce, crispy onions and cheddar.',599,'Burgers','https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=80',true,true,2),
-('Crispy Chicken','crispy-chicken','Crunchy chicken fillet, creamy slaw, lettuce and signature mayo.',549,'Chicken','https://images.unsplash.com/photo-1606756790138-261d2b21cd75?auto=format&fit=crop&w=1200&q=80',true,true,3),
-('Loaded Fries','loaded-fries','Golden fries loaded with cheese, house sauce and crispy bits.',299,'Sides','https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=1200&q=80',false,true,4),
-('Golden Rings','golden-rings','Crispy onion rings with a smoky dipping sauce.',249,'Sides','https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=1200&q=80',false,true,5),
-('Vanilla Shake','vanilla-shake','Cold, creamy vanilla shake topped for the perfect finish.',299,'Drinks','https://images.unsplash.com/photo-1579954115545-a95591f28bfc?auto=format&fit=crop&w=1200&q=80',true,true,6)
+insert into public.products (name,slug,description,price,category,image_url,featured,active,sort_order) values
+('Classic YUMMY','classic-yummy','Smash patty, cheddar, shredded lettuce, pickles and house sauce.',690,'Burgers','https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=80',true,true,1),
+('Firehouse','firehouse','Double smash, melted cheese, crispy onions and a smoky hot sauce.',820,'Burgers','https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=80',true,true,2),
+('Crispy Chicken','crispy-chicken','Crunchy chicken, slaw, cheese and creamy pepper mayo.',760,'Chicken','https://images.unsplash.com/photo-1606756790138-261d2b21cd75?auto=format&fit=crop&w=1200&q=80',true,true,3),
+('Loaded Fries','loaded-fries','Crispy fries covered in cheese sauce, jalapeño and Bite House dust.',390,'Sides','https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=1200&q=80',false,true,4),
+('Golden Rings','golden-rings','Crispy onion rings with a side of signature dip.',320,'Sides','https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=1200&q=80',false,true,5),
+('Salted Caramel Shake','salted-caramel-shake','Cold vanilla shake, salted caramel and a tiny sea-salt finish.',480,'Drinks','https://images.unsplash.com/photo-1579954115545-a95591f28bfc?auto=format&fit=crop&w=1200&q=80',true,true,6),
+('Cold Cola','cold-cola','Ice-cold fizz served just the way a burger deserves.',190,'Drinks','',false,true,7),
+('Warm Brownie','warm-brownie','Fudgy chocolate brownie with vanilla cream.',420,'Dessert','',false,true,8)
 on conflict (slug) do nothing;
