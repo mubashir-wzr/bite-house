@@ -1,3 +1,20 @@
-'use client';
-import {menu} from '@/lib/menu';import {useCart} from '@/components/CartProvider';import {useState} from 'react';
-export default function Menu(){const {add}=useCart();const [cat,setCat]=useState('All');const cats=['All','Burgers','Sides','Drinks'];return <section className="page"><div className="pageHead"><p className="eyebrow">THE MENU</p><h1>Built for big bites.</h1><p>Freshly made. No boring burgers.</p></div><div className="tabs">{cats.map(c=><button className={cat===c?'active':''} onClick={()=>setCat(c)} key={c}>{c}</button>)}</div><div className="grid">{menu.filter(x=>cat==='All'||x.cat===cat).map(x=><article className="food" key={x.id}><div className="foodVisual">🍔<span>{x.tag}</span></div><div className="foodInfo"><div><h2>{x.name}</h2><p>{x.desc}</p></div><strong>Rs {x.price}</strong></div><button className="add" onClick={()=>add({id:x.id,name:x.name,price:x.price,extras:[]})}>Add to cart +</button></article>)}</div></section>}
+import { ProductCard } from '@/components/ProductCard';
+import { fallbackMenu } from '@/lib/menu';
+import { getProducts } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
+
+export default async function MenuPage() {
+  let products = fallbackMenu;
+  try {
+    const dbProducts = await getProducts({ activeOnly: true });
+    if (dbProducts.length) products = dbProducts;
+  } catch {}
+
+  const groups = products.reduce<Record<string, typeof products>>((acc, product) => {
+    (acc[product.category] ||= []).push(product);
+    return acc;
+  }, {});
+
+  return <main className="page-shell"><section className="page-hero"><div className="container"><p className="eyebrow">THE MENU</p><h1>Pick your craving.</h1><p>Everything is made to order. No filler, no boring shortcuts.</p></div></section><section className="section"><div className="container">{Object.entries(groups).map(([category, items]) => <div className="menu-group" key={category}><div className="menu-group-head"><h2>{category}</h2><span>{items.length} items</span></div><div className="product-grid">{items.map((product) => <ProductCard key={product.id} product={product} />)}</div></div>)}</div></section></main>;
+}

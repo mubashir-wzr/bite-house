@@ -1,0 +1,7 @@
+import { NextResponse } from 'next/server';
+import { createProduct, deleteProduct, getProducts, updateProduct } from '@/lib/supabase';
+import { isAdmin } from '@/lib/admin';
+export async function GET(){if(!await isAdmin())return NextResponse.json({error:'Unauthorized'},{status:401});try{return NextResponse.json({products:await getProducts()});}catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Could not load products.'},{status:500});}}
+export async function POST(request:Request){if(!await isAdmin())return NextResponse.json({error:'Unauthorized'},{status:401});try{return NextResponse.json({product:await createProduct(await request.json())});}catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Could not create product.'},{status:500});}}
+export async function PUT(request:Request){if(!await isAdmin())return NextResponse.json({error:'Unauthorized'},{status:401});try{const body=await request.json();const id=Number(body.id);delete body.id;return NextResponse.json({product:await updateProduct(id,body)});}catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Could not update product.'},{status:500});}}
+export async function DELETE(request:Request){if(!await isAdmin())return NextResponse.json({error:'Unauthorized'},{status:401});try{const {id}=await request.json();await deleteProduct(Number(id));return NextResponse.json({ok:true});}catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Could not delete product.'},{status:500});}}
